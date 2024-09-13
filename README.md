@@ -14,9 +14,9 @@ Sprendžiamo uždavinio aprašymas
     
 ### Funkciniai reikalavimai
     1. Vartotojo registracija ir autentifikacija - 2laboratorinis darbas autentifikacija ir autorizacija naudojant OAUTH2
-    2. Knygos kūrimas ir valdymas - taikomosios srities objekto pridėjimas ir valdymas
+    2. Knygos kūrimas ir valdymas - taikomosios srities objekto pridėjimas, redagavimas ir ištrynimas (su admin role)
     3. Skaitymo progreso sekimas - knygas galima pridėti prie "skaitytų knygų" sąrašo, matoma bendra skaitymo statistika ir vartotojo progresas
-    4. Įvertinimo ir komentaro palikimas - galimybė palikti komentarą bei įvertinimą apie atitinkama knygą
+    4. Įvertinimo ir komentaro palikimas - galimybė pateikti, redaguoti ir ištrinti komentarą bei įvertinimą apie atitinkama knygą
     5. Skaitymo tikslų nustatymas - galimybė vartotojui nustatyti asmeninius skaitymo tikslus (pvz., knygų skaičių per metus)
 
 ### Pasirinktų technologijų aprašymas
