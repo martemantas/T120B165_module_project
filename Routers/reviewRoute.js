@@ -1,27 +1,35 @@
 import express from 'express';
-import review from "../models/Review.js"
+import Category from './../models/Category.js';
+import Book from './../models/Book.js';
+import Review from './../models/Review.js';
 
 const router = express.Router();
 
 //post new record
-router.post('/reviews', async (req, res) => {
+router.post('/categories/:categoryID/books/:bookID/reviews', async (req, res) => {
     try{
-        const data = new review(req.body)
-        const result = await data.save()
+        const { categoryID, bookID } = req.params;
+        console.log(bookID);
+        const book = await Book.findById(bookID);
+        if (!book) {
+            return res.status(404).json({
+                status: 'FAILED',
+                message: 'Book not found'
+            });
+        }
 
-        if(!result){
-            res.status(400).json({
-                status:"FAILED",
-                message: "Bad payload."
-            })
-        }
-        else{
-            res.status(201).json({
-                status:"SUCCESS",
-                message: "new review posted successfully",
-                data: result
-            })
-        }
+        const newReview = new Review({
+            ...req.body,
+            book: bookID
+        });
+
+        const savedReview = await newReview.save();
+
+        res.status(201).json({
+            status:"SUCCESS",
+            message: "new Review posted successfully",
+            data: savedReview
+        })
     }
     catch(error){
         res.status(422).json({
@@ -35,7 +43,7 @@ router.post('/reviews', async (req, res) => {
 //get all records
 router.get('/reviews', async (req, res) => {
     try {
-        const result = await review.find();
+        const result = await Review.find();
         if(!result || result.length === 0){
             res.status(404).json({
                 status:"FAILED",
@@ -63,7 +71,7 @@ router.get('/reviews', async (req, res) => {
 router.get('/reviews/:id', async (req, res) => {
     try{
         const _id = req.params.id;
-        const result = await review.findById(_id);
+        const result = await Review.findById(_id);
 
         if(!result){
             res.status(404).json({
@@ -74,7 +82,7 @@ router.get('/reviews/:id', async (req, res) => {
         else{
             res.status(200).json({
                 status:"SUCCESS",
-                message: "successfully retrieved review by ID",
+                message: "successfully retrieved Review by ID",
                 data: result
             })
         }
@@ -87,13 +95,72 @@ router.get('/reviews/:id', async (req, res) => {
     }
 });
 
-//update (PUT) record
-router.put('/reviews/:id', async (req, res) => {
-    try{
-        const _id = req.params.id;
-        const result = await review.findByIdAndUpdate(_id, req.body, {new: true});
+// Get review by book id
+router.get('/categories/:categoryID/books/:bookID/reviews', async (req, res) => {
+    try {
+        const bookID = req.params.bookID;
+        const reviews = await Review.find({ book: bookID });
 
-        if(!result){
+        if (!reviews || reviews.length === 0) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "No reviews found for this book"
+            });
+        }
+
+        res.status(200).json({
+            status: "SUCCESS",
+            message: "Successfully retrieved reviews for the book",
+            data: reviews
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: "ERROR",
+            message: "An error occurred while retrieving reviews",
+            error: error.message
+        });
+    }
+});
+
+// GET a specific review by its ID
+router.get('/categories/:categoryID/books/:bookID/reviews/:reviewID', async (req, res) => {
+    const { bookID, reviewID } = req.params;
+
+    try {
+        const review = await Review.findOne({ _id: reviewID, book: bookID });
+        if (!review) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Review not found"
+            });
+        }
+
+        res.status(200).json({
+            status: "SUCCESS",
+            message: "Successfully retrieved the review",
+            data: review
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: "ERROR",
+            message: "An error occurred while retrieving the review",
+            error: error.message
+        });
+    }
+});
+
+//update (PUT) record
+router.put('/categories/:categoryID/books/:bookID/reviews/:reviewID', async (req, res) => {
+    const { categoryID, bookID, reviewID } = req.params;
+    
+    try{
+        const updatedReview = await Review.findByIdAndUpdate(
+            reviewID,
+            { ...req.body, book: [bookID] },
+            { new: true }
+        );
+
+        if(!updatedReview){
             res.status(400).json({
                 status:"FAILED",
                 message: "Bad payload"
@@ -103,7 +170,7 @@ router.put('/reviews/:id', async (req, res) => {
             res.status(200).json({
                 status:"SUCCESS",
                 message: "Record was successfully updated",
-                data: result
+                data: updatedReview
             })
         }
     }
@@ -117,12 +184,17 @@ router.put('/reviews/:id', async (req, res) => {
 });
 
 //update (PATCH) record
-router.patch('/reviews/:id', async (req, res) => {
-    try {
-        const _id = req.params.id;
-        const result = await review.findByIdAndUpdate(_id, req.body, { new: true });
+router.patch('/categories/:categoryID/books/:bookID/reviews/:reviewID', async (req, res) => {
+    const { categoryID, bookID, reviewID } = req.params;
+    
+    try{
+        const updatedReview = await Review.findByIdAndUpdate(
+            reviewID,
+            { ...req.body, book: [bookID] },
+            { new: true }
+        );
 
-        if(!result){
+        if(!updatedReview){
             res.status(404).json({
                 status:"FAILED",
                 message: "Record not found"
@@ -132,7 +204,7 @@ router.patch('/reviews/:id', async (req, res) => {
             res.status(200).json({
                 status:"SUCCESS",
                 message: "Record was successfully updated",
-                data: result
+                data: updatedReview
             })
         }
     } catch (error) {
@@ -145,12 +217,13 @@ router.patch('/reviews/:id', async (req, res) => {
 });
 
 // delete record
-router.delete('/reviews/:id', async (req, res) => {
-    try{
-        const _id = req.params.id;
-        const result = await review.findByIdAndDelete(_id);
+router.delete('/categories/:categoryID/books/:bookID/reviews/:reviewID', async (req, res) => {
+    const { categoryID, bookID, reviewID } = req.params;
+    
+    try {
+        const deletedReview = await Review.findByIdAndDelete(reviewID);
 
-        if(!result){
+        if(!deletedReview){
             res.status(404).json({
                 status:"FAILED",
                 message: "Record was not deleted"
@@ -160,7 +233,7 @@ router.delete('/reviews/:id', async (req, res) => {
             res.status(200).json({
                 status:"SUCCESS",
                 message: "Record was successfully deleted",
-                data: result
+                data: deletedReview
             })
         }
     }

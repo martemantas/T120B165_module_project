@@ -13,10 +13,11 @@ const bookSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    categories: [{
-        type: String,
-        required: true,
-    }]
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true
+    }
 });
 
 const Book = mongoose.model('Book', bookSchema);

@@ -11,7 +11,6 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const MONGOURL = process.env.MONGO_URL;
 
-app.use(express.json())
 
 //db connection
 mongoose.connect(MONGOURL).then(()=>{
@@ -22,9 +21,11 @@ mongoose.connect(MONGOURL).then(()=>{
     );
 }).catch((error) => console.log(error));
 
-app.use(categoryRoute)
-app.use(bookRoute)
-app.use(reviewRoute)
+app.use(express.json())
+
+app.use(categoryRoute);
+app.use('/', bookRoute);
+app.use('/', reviewRoute);
 
 //get post put patch delete
 //kategorija -> knyga -> ivertinimas

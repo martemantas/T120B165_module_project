@@ -157,7 +157,7 @@ router.delete('/categories/:id', async (req, res) => {
             })
         }
         else{
-            res.status(200).json({
+            res.status(200).json({ //204 gal?
                 status:"SUCCESS",
                 message: "Record was successfully deleted",
                 data: result

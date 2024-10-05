@@ -1,32 +1,38 @@
 import express from 'express';
-import book from "../models/Book.js"
+import Category from './../models/Category.js';
+import Book from './../models/Book.js';
 
 const router = express.Router();
 
 //post new record
-router.post('/books', async (req, res) => {
+router.post('/categories/:categoryID/books', async (req, res) => {
     try{
-        const data = new book(req.body)
-        const result = await data.save()
+        const { categoryID } = req.params;
+        
+        const category = await Category.findById(categoryID);
+        if (!category) {
+            return res.status(404).json({
+                status: 'FAILED',
+                message: 'Category not found'
+            });
+        }
 
-        if(!result){
-            res.status(400).json({
-                status:"FAILED",
-                message: "post of book failed"
-            })
-        }
-        else{
-            res.status(201).json({
-                status:"SUCCESS",
-                message: "new book posted successfully",
-                data: result
-            })
-        }
-    }
-    catch(error){
-        res.status(422).json({
-            status: "FAILED",
-            message: "Unprocessable entity: Invalid data",
+        const newBook = new Book({
+            ...req.body,
+            category: categoryID
+        });
+
+        const savedBook = await newBook.save();
+        
+        res.status(201).json({
+            status: "SUCCESS",
+            message: `Book added successfully under category: ${category.topic}`,
+            data: savedBook
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: "ERROR",
+            message: "An error occurred while adding the book",
             error: error.message
         });
     }
@@ -35,7 +41,7 @@ router.post('/books', async (req, res) => {
 //get all records
 router.get('/books', async (req, res) => {
     try {
-        const result = await book.find();
+        const result = await Book.find();
         if(!result){
             res.status(404).json({
                 status:"FAILED",
@@ -56,10 +62,10 @@ router.get('/books', async (req, res) => {
 });
 
 // get by ID
-router.get('/books/:id', async (req, res) => {
+router.get('/books/:bookId', async (req, res) => {
     try{
-        const _id = req.params.id;
-        const result = await book.findById(_id);
+        const _id = req.params.bookId;
+        const result = await Book.findById(_id);
 
         if(!result){
             res.status(404).json({
@@ -83,13 +89,72 @@ router.get('/books/:id', async (req, res) => {
     }
 });
 
-//update(put) record
-router.put('/books/:id', async (req, res) => {
-    try{
-        const _id = req.params.id;
-        const result = await book.findByIdAndUpdate(_id, req.body, {new: true});
+// Get book by category id
+router.get('/categories/:categoryId/books', async (req, res) => {
+    try {
+        const categoryId = req.params.categoryId;
+        const books = await Book.find({ category: categoryId });
 
-        if(!result){
+        if (!books || books.length === 0) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "No books found for this category"
+            });
+        }
+
+        res.status(200).json({
+            status: "SUCCESS",
+            message: "Successfully retrieved books for the category",
+            data: books
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: "ERROR",
+            message: "An error occurred while retrieving books",
+            error: error.message
+        });
+    }
+});
+
+// GET a specific book by its ID
+router.get('/categories/:categoryID/books/:bookID', async (req, res) => {
+    const { categoryID, bookID } = req.params;
+
+    try {
+        const book = await Book.findOne({ _id: bookID, category: categoryID });
+        if (!book) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Book not found"
+            });
+        }
+
+        res.status(200).json({
+            status: "SUCCESS",
+            message: "Successfully retrieved the book",
+            data: book
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: "ERROR",
+            message: "An error occurred while retrieving the book",
+            error: error.message
+        });
+    }
+});
+
+//update(put) record
+router.put('/categories/:categoryID/books/:bookID', async (req, res) => {
+    const { categoryID, bookID } = req.params;
+    
+    try{
+        const updatedBook = await Book.findByIdAndUpdate(
+            bookID,
+            { ...req.body, category: [categoryID] },
+            { new: true }
+        );
+
+        if(!updatedBook){
             res.status(400).json({
                 status:"FAILED",
                 message: "Record was not updated"
@@ -99,7 +164,7 @@ router.put('/books/:id', async (req, res) => {
             res.status(200).json({
                 status:"SUCCESS",
                 message: "Record was successfully updated",
-                data: result
+                data: updatedBook
             })
         }
     }
@@ -112,26 +177,31 @@ router.put('/books/:id', async (req, res) => {
     }
 });
 
-// patch record todo
-router.patch('/books/:id', async (req, res) => {
+// patch record 
+router.patch('/categories/:categoryID/books/:bookID', async (req, res) => {
+    const { categoryID, bookID } = req.params;
+    
     try {
-        const _id = req.params.id;
-        const result = await book.findByIdAndUpdate(_id, req.body, { new: true });
+        const updatedBook = await Book.findByIdAndUpdate(
+            bookID,
+            { ...req.body },
+            { new: true }
+        );
 
-        if(!result){
-            res.status(404).json({
-                status:"FAILED",
+        if (!updatedBook) {
+            return res.status(404).json({
+                status: "FAILED",
                 message: "Record was not found"
-            })
+            });
         }
         else{
             res.status(200).json({
                 status:"SUCCESS",
                 message: "Record was successfully updated",
-                data: result
+                data: updatedBook
             })
         }
-    } catch (error) { //todo make sure correct
+    } catch (error) {
         res.status(422).json({
             status: "ERROR",
             message: "An error occurred while updating the record",
@@ -141,22 +211,23 @@ router.patch('/books/:id', async (req, res) => {
 });
 
 // delete record
-router.delete('/books/:id', async (req, res) => {
-    try{
-        const _id = req.params.id;
-        const result = await book.findByIdAndDelete(_id);
+router.delete('/categories/:categoryID/books/:bookID', async (req, res) => {
+    const { categoryID, bookID } = req.params;
 
-        if(!result){
+    try{
+        const deletedBook = await Book.findByIdAndDelete(bookID);
+
+        if(!deletedBook){
             res.status(404).json({
                 status:"FAILED",
-                message: "Record was not deleted"
+                message: "Record was not found"
             })
         }
         else{
             res.status(200).json({
                 status:"SUCCESS",
                 message: "Record was successfully deleted",
-                data: result
+                data: deletedBook
             })
         }
     }
