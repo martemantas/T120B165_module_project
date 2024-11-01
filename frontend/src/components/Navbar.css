@@ -1,0 +1,82 @@
+.sidebar {
+  width: 20%;
+  height: calc(100vh - 100px); /* Minus footer */
+  background-color: var(--primary-body);
+  padding: 10px 50px;
+  box-sizing: border-box;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+  
+.sidebar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.sidebar-title a{
+  color: var(--primary-text);
+  text-decoration: none;
+}
+
+.welcome-message {
+  display: flex;
+  align-items: center;
+}
+  
+.avatar-icon {
+  margin-right: 0.5rem;
+  font-size: 1.5rem;
+  color: #555;
+}  
+  
+.sidebar-menu-title {
+  color: var(--secondary-text);
+  margin-bottom: 10px;
+}
+  
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+}
+  
+.sidebar-button {
+  display: flex;
+  color: var(--primary-text);
+  align-items: center;
+  font-size: 1.25rem;
+  background-color: transparent;
+  border: none;
+  padding: 10px 0; /* 15 */
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  text-decoration: none;
+}
+  
+.sidebar-button:hover{
+  font-weight: bold;
+}
+.sidebar-button:hover .icon{
+  background-color: var(--third-body);
+}
+  
+.icon {
+  margin-right: 10px;
+  background-color: var(--secondary-body);
+  padding: 10px;
+  border-radius: 50%;
+}
+
+.sidebar-divider {
+  border: 0.5px solid var(--secondary-text);
+  margin: 20px 0;
+}
+
+@media only screen and (max-width: 1500px) {
+  .sidebar-button{
+    font-size: 1rem;
+    padding: 5px 0;
+  }
+}

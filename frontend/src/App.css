@@ -1,0 +1,51 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main-content {
+  display: flex;
+  flex: 1; /* Allow the content area to grow and fill remaining space so footer would always be at the bottom */
+  margin-left: 20%; /* Leave space for the sidebar */
+}
+
+.info-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mouse Click Effects */
+.clickEffect {
+  position: fixed;
+  box-sizing: border-box;
+  border-style: solid;
+  border-color: #761d94;
+  border-radius: 50%;
+  animation: clickEffect 0.4s ease-out;
+  z-index: 99999;
+  pointer-events: none;
+}
+
+@keyframes clickEffect {
+  0% {
+      opacity: 1;
+      width: 0.167em;
+      height: 0.167em;
+      margin: -0.0835em;
+      border-width: 0.167em;
+  }
+  100% {
+      opacity: 0.2;
+      width: 5em;
+      height: 5em;
+      margin: -2.5em;
+      border-width: 0.01em;
+  }
+}

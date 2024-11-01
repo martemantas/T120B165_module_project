@@ -1,0 +1,11 @@
+.footer {
+    background-color: var(--secondary-body);
+    color: var(--primary-text);
+    text-align: center;
+    padding: 1rem;
+  }
+  
+  .footer-text {
+    margin: 0;
+  }
+  
