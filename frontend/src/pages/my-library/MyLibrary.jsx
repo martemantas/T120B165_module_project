@@ -51,7 +51,7 @@ const MyLibrary = () => {
         <div className='books-container'>
             <h2 className='books-title'>My Library</h2>
             {error && <p className="text-danger">{error}</p>}
-            {readBooks.length > 0 ? (
+            {readBooks?.length > 0 ? (
                 <div className="book-list">
                     {readBooks.map((book) => (
                         <div key={book._id} className="book-item" onClick={() => handleBookOpen(book)}>
