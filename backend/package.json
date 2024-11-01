@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "devStart": "concurrently \"nodemon back.js\" \"cd frontend && npm start\"",
-    "start": "node back.js"
+    "start": "node back.js",
+    "build": "react-scripts build"
   },
   "keywords": [],
   "author": "",
