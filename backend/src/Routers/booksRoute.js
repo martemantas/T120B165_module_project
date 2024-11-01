@@ -260,7 +260,7 @@ router.delete('/categories/:categoryID/books/:bookID', isConnectedAsAdmin, async
     try{
         const bookToDelete = await Book.findById(bookID);
         await Review.deleteMany({ book: bookID });
-        await ReadBook.deleteMany(bookID);
+        await ReadBook.deleteMany({ book: bookID });
 
         const deletedBook = await Book.findByIdAndDelete(bookID);
 

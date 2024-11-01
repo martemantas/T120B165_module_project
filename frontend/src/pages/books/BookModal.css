@@ -122,3 +122,9 @@
 .isRead{
     margin: 0.5rem 0;
 }
+
+@media only screen and (max-width: 768px) {
+    .books-title{
+        text-align: right;
+    }
+}

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook, faList, faBookmark, faCog, faQuestionCircle, faSignOutAlt, faSignInAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faBook, faList, faBookmark, faCog, faQuestionCircle, faSignOutAlt, faSignInAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 
@@ -19,6 +19,7 @@ const settingItems = [
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -54,6 +55,14 @@ function Navbar() {
       console.error("Logout error:", error);
     };
   };
+  
+  const handleToggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
 
   const renderWelcomeMessage = () => (
     <div className="welcome-message">
@@ -63,14 +72,18 @@ function Navbar() {
   );
 
   return (
-    <nav className="sidebar">
-      <h1 className="sidebar-title"><Link to='/'>THE BOOKS</Link></h1>
+    <>
+    <button className="hamburger" onClick={handleToggleSidebar}>
+        <FontAwesomeIcon icon={faBars} />
+      </button>
+    <nav className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
+      <h1 className="sidebar-title" onClick={closeSidebar}><Link to='/'>THE BOOKS</Link></h1>
       {isLoggedIn && renderWelcomeMessage()}
       <p className="sidebar-menu-title">MENU</p>
 
       <div className="sidebar-menu">
         {menuItems.map((item, index) => (
-          <Link key={index} to={item.path} className="sidebar-button">
+          <Link key={index} to={item.path} className="sidebar-button" onClick={closeSidebar}>
             <FontAwesomeIcon icon={item.icon} className="icon" />
             {item.label}
           </Link>
@@ -81,7 +94,7 @@ function Navbar() {
 
       <div className="sidebar-menu">
         {settingItems.map((item, index) => (
-          <Link key={index} to={item.path} className="sidebar-button">
+          <Link key={index} to={item.path} className="sidebar-button" onClick={closeSidebar}>
             <FontAwesomeIcon icon={item.icon} className="icon" />
             {item.label}
           </Link>
@@ -91,17 +104,18 @@ function Navbar() {
       <hr className="sidebar-divider" />
 
       {isLoggedIn ? (
-        <button onClick={handleLogout} className="sidebar-button">
+        <button onClick={() => { handleLogout(); closeSidebar(); }} className="sidebar-button" >
           <FontAwesomeIcon icon={faSignOutAlt} className="icon" />
           Log out
         </button>
       ) : (
-        <Link to="/login" className="sidebar-button">
+        <Link to="/login" className="sidebar-button" onClick={closeSidebar}>
           <FontAwesomeIcon icon={faSignInAlt} className="icon" />
           Log in
         </Link>
       )}
     </nav>
+    </>
   );
 }
 

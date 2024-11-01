@@ -102,6 +102,12 @@ const BookDetails = () => {
     };
 
     const submitReview = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Please log in');
+            return;
+        }
+
         try {
             const payload = {
                 reviewerName: user.userName,
@@ -162,13 +168,6 @@ const BookDetails = () => {
             console.error('Error removing from read books:', error);
         }
     };
-    
-    // const closeModal = () => {
-    //     setShowModal(false);
-    //     setBook(null);
-    //     setReviewText('');
-    //     setReviews([]);
-    // };
 
     if (error) return <div>{error}</div>;
     if (!book) return <div>Loading...</div>;

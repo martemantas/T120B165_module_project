@@ -19,23 +19,18 @@ function Login() {
       const url = isRegisterForm
         ? process.env.REACT_APP_API_REF + 'api/register'
         : process.env.REACT_APP_API_REF + 'api/login';
-      
-      console.log('1', isRegisterForm);
-      console.log('2', url);
 
       const payload = isRegisterForm
         ? { email, password, userName }
         : { email, password };
 
-      console.log('3', payload);
-
       const response = await axios.post(url, payload);
 
       const token = response.data.token;
-      
       localStorage.setItem('token', token);
+      
+      navigate('/login')
       window.location.reload();
-      navigate('/')
     }
     catch (error) {
       if (error.response) {
