@@ -71,7 +71,7 @@ router.get('/categories', async (req, res) => {
     }
 });
 
-// get by name
+// get by category name
 router.get('/categories/topic/:topic', async (req, res) => {
     try{
         const topic = req.params;
@@ -87,6 +87,44 @@ router.get('/categories/topic/:topic', async (req, res) => {
             res.status(200).json({
                 status:"SUCCESS",
                 message: "successfully retrieved category by topic name",
+                data: result
+            })
+        }
+    }
+    catch(error){
+        res.status(404).json({
+            status:"FAILED",
+            message: "Record not found"
+        })
+    }
+});
+
+// get by book name
+router.get('/categories/title/:title', async (req, res) => {
+    try{
+        const { title } = req.params;
+
+        const bookData = await book.findOne({ title });
+
+        if (!bookData) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Book not found"
+            });
+        }
+
+        const result = await category.findOne({ _id: bookData.category} );
+
+        if(!result){
+            res.status(404).json({
+                status:"FAILED",
+                message: "Record not found"
+            })
+        }
+        else{
+            res.status(200).json({
+                status:"SUCCESS",
+                message: "successfully retrieved category by book title name",
                 data: result
             })
         }

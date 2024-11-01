@@ -65,6 +65,45 @@ router.get('/books', async (req, res) => {
     }
 });
 
+// Get book by title
+router.get('/books/:category/:title', async (req, res) => {
+    try {
+        const { category, title } = req.params;
+        
+        const categoryData = await Category.findOne({ topic: category });
+        
+        if (!categoryData) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Category not found"
+            });
+        }
+
+        const categoryId = categoryData._id;
+        const result = await Book.findOne({ category: categoryId, title });
+
+        if (!result) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Record not found"
+            });
+        }
+        else{
+            res.status(200).json({
+                status: "SUCCESS",
+                message: "Successfully retrieved book by title",
+                data: result
+            });
+        }
+    } catch (error) {
+        console.error("Error retrieving book:", error);
+        res.status(500).json({
+            status: "FAILED",
+            message: "An error occurred while retrieving the book"
+        });
+    }
+});
+
 // get by ID
 router.get('/books/:bookId', async (req, res) => {
     try{

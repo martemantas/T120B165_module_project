@@ -41,7 +41,7 @@ function Home() {
   return (
     <div className='main-home'>
       <div className="discover-container">
-        <h1 className="discover-title">Discover</h1>
+        <h1 className="discover-title">Explore</h1>
         <div className="search-bar">
           <select 
             className="category-dropdown"
@@ -69,7 +69,7 @@ function Home() {
           </div>
         </div>
       </div>
-      <BookCategories />
+      {/* <BookCategories /> */}
     </div>
   );
 }
