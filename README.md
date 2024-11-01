@@ -5,19 +5,18 @@ Sprendžiamo uždavinio aprašymas
 
 ### Sistemos paskirtis
 
-    Sistema yra skirta padėti knygų skaitytojams sekti bendrą knygų skaitymo progresą bei skatinti skaitymo bendruomenės narių interakciją dalinantis savo nuomone.
+    Ši sistema skirta padėti knygų skaitytojams sekti bendrą knygų skaitymo progresą bei skatinti skaitymo bendruomenės narių interakciją dalinantis savo nuomone.
     Vartotojai šioje sistemoje galės:
-    1. Dalintis savo nuomone bei palikti įvertinimą apie knygą pasirinktą iš knygų sąrašo 
-    2. Registruoti skaitomas knygas ir stebėti savo skaitymo progresą
-    3. Nustatyti skaitymo tikslus ir matyti savo pasiekimus
-    4. Peržiūrėti asmeninę skaitymo statistiką
+    1. Palikti atsiliepimus ir įvertinimus apie knygas, pasirinktas iš išsamaus knygų sąrašo.
+    2. Registruoti skaitomas knygas ir stebėti savo skaitymo progresą.
+    3. Ieškoti norimos knygos pagal kategorijas.
+    4. Peržiūrėti asmeninę skaitymo statistiką.
     
 ### Funkciniai reikalavimai
-    1. Vartotojo registracija ir autentifikacija - 2laboratorinis darbas autentifikacija ir autorizacija naudojant OAUTH2
-    2. Knygos kūrimas ir valdymas - taikomosios srities objekto pridėjimas, redagavimas ir ištrynimas (su admin role)
+    1. Vartotojo registracija ir autentifikacija - 2laboratorinis darbas autentifikacija ir autorizacija naudojant JSON Web Tokens (JWT)
+    2. Knygos kūrimas ir valdymas - taikomosios srities objekto pridėjimas ir ištrynimas (su admin role)
     3. Skaitymo progreso sekimas - knygas galima pridėti prie "skaitytų knygų" sąrašo, matoma bendra skaitymo statistika ir vartotojo progresas
-    4. Įvertinimo ir komentaro palikimas - galimybė pateikti, redaguoti ir ištrinti komentarą bei įvertinimą apie atitinkama knygą
-    5. Skaitymo tikslų nustatymas - galimybė vartotojui nustatyti asmeninius skaitymo tikslus (pvz., knygų skaičių per metus)
+    4. Įvertinimo ir komentaro palikimas - galimybė pateikti ir ištrinti komentarą bei įvertinimą apie atitinkamą knygą
 
 ### Pasirinktų technologijų aprašymas
 Frontend:
