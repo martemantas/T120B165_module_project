@@ -20,6 +20,8 @@
 ## 2. Sistemos Architektūra
 Sistemos architektūra paremta mikroservisų principais ir REST API naudojimu. Sistemos duomenys saugomi `MongoDB` duomenų bazėje. API aprašymas pateiktas `api-spec.yaml` faile pagal OpenAPI standartą.
 
+![deployment diagram](https://github.com/user-attachments/assets/dd1c0a3f-03c4-4352-9a46-c53d1d1de2cf)
+
 ## 3. Naudotojo Sąsajos Projektas
 
 1. **Home puslapis** – Pagrindinis puslapis su animacija ir paieškos lauku. Paieškos skiltyje galima ieškoti knygų pagal pavadinimą, yra siūlomi variantai tų knygų kurių sutampa pavadinimo pradžia. Taip pat galima rinktis tik tas knygas kurios priklauso specifinei kategorijai.
