@@ -21,13 +21,13 @@ const PORT = process.env.PORT || 8080;
 const MONGOURL = process.env.MONGO_URL;
 
 app.use(cors({
-    origin: 'https://t120-b165-module-project-server.vercel.app', 
+    origin: 'https://t120-b165-module-project-client.vercel.app', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
 
 //db connection
-mongoose.connect(MONGOURL).then(()=>{
+mongoose.connect(MONGOURL || MONGO_URL_LOCAL).then(()=>{
     console.log("Database is connected");
     app.listen(PORT, () => console.log('Server is live'));
 }).catch((error) => console.log(error));
