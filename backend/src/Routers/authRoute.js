@@ -58,6 +58,12 @@ router.post('/login', async (req, res) => {
             expiresIn: '1h',
         });
 
+        res.cookie('__vercel_live_token', token, { 
+            httpOnly: true, 
+            secure: true, 
+            sameSite: 'None' 
+        });
+
         const newExpTokenTime = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
         const newExpRefreshTokenTime = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hour
         user.expTokenTime = newExpTokenTime;

@@ -2,6 +2,7 @@
 import dotenv from "dotenv"
 import express from 'express';
 import mongoose from 'mongoose';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import path from "path";
 import { fileURLToPath } from 'url';
@@ -18,6 +19,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 const MONGOURL = process.env.MONGO_URL;
+
+app.use(cors({
+    origin: 'https://t120-b165-module-project-server.vercel.app', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
 
 //db connection
 mongoose.connect(MONGOURL).then(()=>{
