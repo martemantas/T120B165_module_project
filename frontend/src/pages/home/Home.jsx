@@ -4,7 +4,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import './Home.css';
-import './BookAnimation.css';
+import './bookAnimation.css';
 
 function Home() {
   const [categories, setCategories] = useState([]);
