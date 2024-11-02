@@ -6,6 +6,33 @@ import { isConnectedAsAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /categories:
+ *   post:
+ *     tags: [Categories]
+ *     summary: Create a new category
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               topic:
+ *                 type: string
+ *                 example: "New Category Topic"
+ *               image:
+ *                 type: string
+ *                 example: "http://example.com/image.jpg"
+ *     responses:
+ *       201:
+ *         description: Successfully created a new category
+ *       400:
+ *         description: Topic and image are required
+ *       422:
+ *         description: Invalid data
+ */
 //post new record
 router.post('/categories', isConnectedAsAdmin, async (req, res) => {
     try{
@@ -44,6 +71,20 @@ router.post('/categories', isConnectedAsAdmin, async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /categories:
+ *   get:
+ *     tags: [Categories]
+ *     summary: Retrieve all categories
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved all categories
+ *       404:
+ *         description: No categories found
+ *       500:
+ *         description: Error fetching categories
+ */
 //get all records
 router.get('/categories', async (req, res) => {
     try {
@@ -71,6 +112,25 @@ router.get('/categories', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /categories/topic/{topic}:
+ *   get:
+ *     tags: [Categories]
+ *     summary: Retrieve a category by topic
+ *     parameters:
+ *       - in: path
+ *         name: topic
+ *         required: true
+ *         description: The topic of the category
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved category by topic
+ *       404:
+ *         description: Record not found
+ */
 // get by category name
 router.get('/categories/topic/:topic', async (req, res) => {
     try{
@@ -99,6 +159,25 @@ router.get('/categories/topic/:topic', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /categories/title/{title}:
+ *   get:
+ *     tags: [Categories]
+ *     summary: Retrieve a category by book title
+ *     parameters:
+ *       - in: path
+ *         name: title
+ *         required: true
+ *         description: The title of the book
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved category by book title
+ *       404:
+ *         description: Book or category not found
+ */
 // get by book name
 router.get('/categories/title/:title', async (req, res) => {
     try{
@@ -137,6 +216,25 @@ router.get('/categories/title/:title', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /categories/{id}:
+ *   get:
+ *     tags: [Categories]
+ *     summary: Retrieve a category by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the category
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved category by ID
+ *       404:
+ *         description: Record not found
+ */
 // get by ID
 router.get('/categories/:id', async (req, res) => {
     try{
@@ -165,6 +263,40 @@ router.get('/categories/:id', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /categories/{id}:
+ *   put:
+ *     tags: [Categories]
+ *     summary: Update a category
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the category
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               topic:
+ *                 type: string
+ *                 example: "Updated Category Topic"
+ *               image:
+ *                 type: string
+ *                 example: "http://example.com/updated-image.jpg"
+ *     responses:
+ *       200:
+ *         description: Successfully updated the category
+ *       400:
+ *         description: Bad payload
+ *       422:
+ *         description: Invalid data
+ */
 //update (PUT) record
 router.put('/categories/:id', isConnectedAsAdmin, async (req, res) => {
     try{
@@ -194,6 +326,40 @@ router.put('/categories/:id', isConnectedAsAdmin, async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /categories/{id}:
+ *   patch:
+ *     tags: [Categories]
+ *     summary: Partially update a category
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the category
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               topic:
+ *                 type: string
+ *                 example: "Partially Updated Topic"
+ *               image:
+ *                 type: string
+ *                 example: "http://example.com/partially-updated-image.jpg"
+ *     responses:
+ *       200:
+ *         description: Successfully updated the category
+ *       404:
+ *         description: Record not found
+ *       422:
+ *         description: Invalid data
+ */
 //update (PATCH) record
 router.patch('/categories/:id', isConnectedAsAdmin, async (req, res) => {
     try {
@@ -222,6 +388,27 @@ router.patch('/categories/:id', isConnectedAsAdmin, async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /categories/{id}:
+ *   delete:
+ *     tags: [Categories]
+ *     summary: Delete a category
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the category
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully deleted the category
+ *       404:
+ *         description: Record was not deleted
+ *       500:
+ *         description: An error occurred while trying to delete the record
+ */
 // delete record
 router.delete('/categories/:id', isConnectedAsAdmin, async (req, res) => {
     try{

@@ -6,6 +6,48 @@ import { isConnectedAsUser, verifyReviewAuthor } from '../middleware/auth.js';
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /categories/{categoryID}/books/{bookID}/reviews:
+ *   post:
+ *     tags: [Reviews]
+ *     summary: Post a new review for a book
+ *     parameters:
+ *       - in: path
+ *         name: categoryID
+ *         required: true
+ *         description: The ID of the category
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookID
+ *         required: true
+ *         description: The ID of the book
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rating:
+ *                 type: integer
+ *                 example: 4
+ *               comment:
+ *                 type: string
+ *                 example: "Great book!"
+ *     responses:
+ *       201:
+ *         description: Review posted successfully
+ *       404:
+ *         description: Book not found
+ *       422:
+ *         description: Invalid rating
+ *       500:
+ *         description: Unprocessable entity: Invalid data
+ */
 //post new record
 router.post('/categories/:categoryID/books/:bookID/reviews', isConnectedAsUser, async (req, res) => {
     try{
@@ -50,6 +92,20 @@ router.post('/categories/:categoryID/books/:bookID/reviews', isConnectedAsUser, 
     }
 });
 
+/**
+ * @swagger
+ * /reviews:
+ *   get:
+ *     tags: [Reviews]
+ *     summary: Retrieve all reviews
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved all reviews
+ *       404:
+ *         description: No reviews found
+ *       500:
+ *         description: Error fetching reviews
+ */
 //get all records
 router.get('/reviews', async (req, res) => {
     try {
@@ -77,6 +133,25 @@ router.get('/reviews', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /reviews/{id}:
+ *   get:
+ *     tags: [Reviews]
+ *     summary: Retrieve a review by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the review
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved review
+ *       404:
+ *         description: Record not found
+ */
 // get by ID
 router.get('/reviews/:id', async (req, res) => {
     try{
@@ -105,6 +180,31 @@ router.get('/reviews/:id', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /categories/{categoryID}/books/{bookID}/reviews:
+ *   get:
+ *     tags: [Reviews]
+ *     summary: Get all reviews for a specific book
+ *     parameters:
+ *       - in: path
+ *         name: categoryID
+ *         required: true
+ *         description: The ID of the category
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookID
+ *         required: true
+ *         description: The ID of the book
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved reviews for the book
+ *       500:
+ *         description: An error occurred while retrieving reviews
+ */
 // Get review by book id
 router.get('/categories/:categoryID/books/:bookID/reviews', async (req, res) => {
     try {
@@ -129,6 +229,39 @@ router.get('/categories/:categoryID/books/:bookID/reviews', async (req, res) => 
     }
 });
 
+/**
+ * @swagger
+ * /categories/{categoryID}/books/{bookID}/reviews/{reviewID}:
+ *   get:
+ *     tags: [Reviews]
+ *     summary: Get a specific review by its ID
+ *     parameters:
+ *       - in: path
+ *         name: categoryID
+ *         required: true
+ *         description: The ID of the category
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookID
+ *         required: true
+ *         description: The ID of the book
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: reviewID
+ *         required: true
+ *         description: The ID of the review
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the review
+ *       404:
+ *         description: Review not found
+ *       500:
+ *         description: An error occurred while retrieving the review
+ */
 // GET a specific review by its ID
 router.get('/categories/:categoryID/books/:bookID/reviews/:reviewID', async (req, res) => {
     const { bookID, reviewID } = req.params;
@@ -156,6 +289,52 @@ router.get('/categories/:categoryID/books/:bookID/reviews/:reviewID', async (req
     }
 });
 
+/**
+ * @swagger
+ * /categories/{categoryID}/books/{bookID}/reviews/{reviewID}:
+ *   put:
+ *     tags: [Reviews]
+ *     summary: Update a review
+ *     parameters:
+ *       - in: path
+ *         name: categoryID
+ *         required: true
+ *         description: The ID of the category
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookID
+ *         required: true
+ *         description: The ID of the book
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: reviewID
+ *         required: true
+ *         description: The ID of the review
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rating:
+ *                 type: integer
+ *                 example: 5
+ *               comment:
+ *                 type: string
+ *                 example: "Updated review text."
+ *     responses:
+ *       200:
+ *         description: Review was successfully updated
+ *       404:
+ *         description: Record not found
+ *       422:
+ *         description: Invalid rating
+ */
 //update (PUT) record
 router.put('/categories/:categoryID/books/:bookID/reviews/:reviewID', isConnectedAsUser, verifyReviewAuthor, async (req, res) => {
     const { bookID, reviewID } = req.params;
@@ -198,6 +377,52 @@ router.put('/categories/:categoryID/books/:bookID/reviews/:reviewID', isConnecte
     }
 });
 
+/**
+ * @swagger
+ * /categories/{categoryID}/books/{bookID}/reviews/{reviewID}:
+ *   patch:
+ *     tags: [Reviews]
+ *     summary: Partially update a review
+ *     parameters:
+ *       - in: path
+ *         name: categoryID
+ *         required: true
+ *         description: The ID of the category
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookID
+ *         required: true
+ *         description: The ID of the book
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: reviewID
+ *         required: true
+ *         description: The ID of the review
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rating:
+ *                 type: integer
+ *                 example: 4
+ *               comment:
+ *                 type: string
+ *                 example: "Partially updated review."
+ *     responses:
+ *       200:
+ *         description: Review was successfully updated
+ *       404:
+ *         description: Record not found
+ *       422:
+ *         description: Invalid rating
+ */
 //update (PATCH) record
 router.patch('/categories/:categoryID/books/:bookID/reviews/:reviewID', isConnectedAsUser, verifyReviewAuthor, async (req, res) => {
     const { bookID, reviewID } = req.params;
@@ -239,6 +464,39 @@ router.patch('/categories/:categoryID/books/:bookID/reviews/:reviewID', isConnec
     }
 });
 
+/**
+ * @swagger
+ * /categories/{categoryID}/books/{bookID}/reviews/{reviewID}:
+ *   delete:
+ *     tags: [Reviews]
+ *     summary: Delete a review
+ *     parameters:
+ *       - in: path
+ *         name: categoryID
+ *         required: true
+ *         description: The ID of the category
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookID
+ *         required: true
+ *         description: The ID of the book
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: reviewID
+ *         required: true
+ *         description: The ID of the review
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Review was successfully deleted
+ *       404:
+ *         description: Record was not found
+ *       500:
+ *         description: An error occurred while trying to delete the record
+ */
 // delete record
 router.delete('/categories/:categoryID/books/:bookID/reviews/:reviewID', isConnectedAsUser, verifyReviewAuthor, async (req, res) => {
     const { categoryID, bookID, reviewID } = req.params;

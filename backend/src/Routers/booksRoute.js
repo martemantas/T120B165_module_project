@@ -8,6 +8,57 @@ import { isConnectedAsUser } from '../middleware/auth.js';
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * tags:
+ *   name: Books
+ *   description: Book management
+ */
+
+/**
+ * @swagger
+ * /categories/{categoryID}/books:
+ *   post:
+ *     tags: [Books]
+ *     summary: Add a new book to a category
+ *     parameters:
+ *       - in: path
+ *         name: categoryID
+ *         required: true
+ *         description: ID of the category to add the book to
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: "Example Book Title"
+ *               author:
+ *                 type: string
+ *                 example: "Author Name"
+ *               description:
+ *                 type: string
+ *                 example: "Description of the book."
+ *               publishedDate:
+ *                 type: string
+ *                 format: date
+ *                 example: "2024-11-01"
+ *               isbn:
+ *                 type: string
+ *                 example: "123-456-789"
+ *     responses:
+ *       201:
+ *         description: Book added successfully
+ *       404:
+ *         description: Category not found
+ *       500:
+ *         description: Error adding book
+ */
 //post new record
 router.post('/categories/:categoryID/books', isConnectedAsAdmin, async (req, res) => {
     try{
@@ -42,6 +93,20 @@ router.post('/categories/:categoryID/books', isConnectedAsAdmin, async (req, res
     }
 });
 
+/**
+ * @swagger
+ * /books:
+ *   get:
+ *     tags: [Books]
+ *     summary: Retrieve all books
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved all books
+ *       404:
+ *         description: No records found
+ *       500:
+ *         description: Error fetching books
+ */
 //get all records
 router.get('/books', async (req, res) => {
     try {
@@ -65,6 +130,33 @@ router.get('/books', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /books/{category}/{title}:
+ *   get:
+ *     tags: [Books]
+ *     summary: Get a book by its title within a category
+ *     parameters:
+ *       - in: path
+ *         name: category
+ *         required: true
+ *         description: Category of the book
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: title
+ *         required: true
+ *         description: Title of the book
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved book by title
+ *       404:
+ *         description: Category or book not found
+ *       500:
+ *         description: Error retrieving book
+ */
 // Get book by title
 router.get('/books/:category/:title', async (req, res) => {
     try {
@@ -104,6 +196,25 @@ router.get('/books/:category/:title', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /books/{bookId}:
+ *   get:
+ *     tags: [Books]
+ *     summary: Get a book by its ID
+ *     parameters:
+ *       - in: path
+ *         name: bookId
+ *         required: true
+ *         description: ID of the book to retrieve
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved book by ID
+ *       404:
+ *         description: Record not found
+ */
 // get by ID
 router.get('/books/:bookId', async (req, res) => {
     try{
@@ -132,6 +243,27 @@ router.get('/books/:bookId', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /categories/{categoryId}/books:
+ *   get:
+ *     tags: [Books]
+ *     summary: Get all books in a specific category
+ *     parameters:
+ *       - in: path
+ *         name: categoryId
+ *         required: true
+ *         description: ID of the category to retrieve books from
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved books for the category
+ *       404:
+ *         description: No books found for this category
+ *       500:
+ *         description: Error retrieving books
+ */
 // Get book by category id
 router.get('/categories/:categoryId/books', async (req, res) => {
     try {
@@ -159,6 +291,33 @@ router.get('/categories/:categoryId/books', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /categories/{categoryID}/books/{bookID}:
+ *   get:
+ *     tags: [Books]
+ *     summary: Get a specific book by its ID in a category
+ *     parameters:
+ *       - in: path
+ *         name: categoryID
+ *         required: true
+ *         description: ID of the category
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookID
+ *         required: true
+ *         description: ID of the book
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the book
+ *       404:
+ *         description: Book not found
+ *       500:
+ *         description: Error retrieving the book
+ */
 // GET a specific book by its ID
 router.get('/categories/:categoryID/books/:bookID', async (req, res) => {
     const { categoryID, bookID } = req.params;
@@ -186,6 +345,49 @@ router.get('/categories/:categoryID/books/:bookID', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /categories/{categoryID}/books/{bookID}:
+ *   put:
+ *     tags: [Books]
+ *     summary: Update a book's details
+ *     parameters:
+ *       - in: path
+ *         name: categoryID
+ *         required: true
+ *         description: ID of the category
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookID
+ *         required: true
+ *         description: ID of the book
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: "Updated Book Title"
+ *               author:
+ *                 type: string
+ *                 example: "Updated Author Name"
+ *               description:
+ *                 type: string
+ *                 example: "Updated description of the book."
+ *     responses:
+ *       200:
+ *         description: Successfully updated the book
+ *       400:
+ *         description: Record was not updated
+ *       422:
+ *         description: Invalid data
+ */
 //update(put) record
 router.put('/categories/:categoryID/books/:bookID', isConnectedAsAdmin, async (req, res) => {
     const { categoryID, bookID } = req.params;
@@ -220,6 +422,46 @@ router.put('/categories/:categoryID/books/:bookID', isConnectedAsAdmin, async (r
     }
 });
 
+/**
+ * @swagger
+ * /categories/{categoryID}/books/{bookID}:
+ *   patch:
+ *     tags: [Books]
+ *     summary: Partially update a book's details
+ *     parameters:
+ *       - in: path
+ *         name: categoryID
+ *         required: true
+ *         description: ID of the category
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookID
+ *         required: true
+ *         description: ID of the book
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: "Partially Updated Book Title"
+ *               description:
+ *                 type: string
+ *                 example: "Partially updated description."
+ *     responses:
+ *       200:
+ *         description: Successfully updated the book
+ *       404:
+ *         description: Record was not found
+ *       422:
+ *         description: An error occurred while updating the record
+ */
 // patch record 
 router.patch('/categories/:categoryID/books/:bookID', isConnectedAsUser, async (req, res) => {
     const { categoryID, bookID } = req.params;
@@ -253,6 +495,33 @@ router.patch('/categories/:categoryID/books/:bookID', isConnectedAsUser, async (
     }
 });
 
+/**
+ * @swagger
+ * /categories/{categoryID}/books/{bookID}:
+ *   delete:
+ *     tags: [Books]
+ *     summary: Delete a book
+ *     parameters:
+ *       - in: path
+ *         name: categoryID
+ *         required: true
+ *         description: ID of the category
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookID
+ *         required: true
+ *         description: ID of the book
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully deleted the book
+ *       404:
+ *         description: Record was not found
+ *       500:
+ *         description: Error trying to delete the record
+ */
 // delete record
 router.delete('/categories/:categoryID/books/:bookID', isConnectedAsAdmin, async (req, res) => {
     const { bookID } = req.params;

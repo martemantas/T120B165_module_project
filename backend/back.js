@@ -6,6 +6,10 @@ import cookieParser from 'cookie-parser';
 import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUI from 'swagger-ui-express';
+import YAML from 'yamljs';
+import fs from 'fs';
 
 import categoryRoute from './src/Routers/categoriesRoute.js';
 import bookRoute from './src/Routers/booksRoute.js';
@@ -31,6 +35,32 @@ const __dirname = dirname(__filename);
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ limit: '2mb', extended: true }));
 app.use(cookieParser());
+
+const options = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'BookTrac',
+            version: '1.0.0'
+        },
+        servers: [
+            {
+                url: 'http://localhost:8080/'
+            }
+        ]
+    },
+    apis: ['./src/Routers/authRoute.js', 
+        './src/Routers/booksRoute.js', 
+        './src/Routers/categoriesRoute.js', 
+        './src/Routers/readBookRoute.js',
+        './src/Routers/reviewRoute.js']
+}
+
+const swaggerSpec = swaggerJSDoc(options);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+
+const yamlSwagger = YAML.stringify(swaggerSpec);
+fs.writeFileSync('api-spec.yaml', yamlSwagger);
 
 //API routes
 app.use(categoryRoute);

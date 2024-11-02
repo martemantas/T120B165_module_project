@@ -5,6 +5,47 @@ import User from '../models/User.js';
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Authentication management
+ */
+
+/**
+ * @swagger
+ * /api/register:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Register a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userName:
+ *                 type: string
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 example: john.doe@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *               role:
+ *                 type: string
+ *                 enum: [user, admin]
+ *                 example: user
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *       400:
+ *         description: User with this username or email already exists
+ *       500:
+ *         description: Error registering user
+ */
 router.post('/register', async (req, res) => {
     const { userName, email, password, role } = req.body;
 
@@ -39,6 +80,48 @@ router.post('/register', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/login:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Login a user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: john.doe@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Login successful
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       404:
+ *         description: User not found
+ *       401:
+ *         description: Invalid credentials
+ *       500:
+ *         description: Error logging in
+ */
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -73,6 +156,26 @@ router.post('/login', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/refresh-token:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Refresh access token
+ *     responses:
+ *       200:
+ *         description: Access token refreshed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       403:
+ *         description: Forbidden - Invalid or expired refresh token
+ */
 router.post('/refresh-token', async (req, res) => {
     const refreshToken = req.cookies.token;
 
@@ -106,6 +209,22 @@ router.post('/refresh-token', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/logout:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Logout a user
+ *     responses:
+ *       200:
+ *         description: Logged out successfully
+ *       400:
+ *         description: No refresh token provided
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Error logging out
+ */
 router.post('/logout', async (req, res) => {
     const refreshToken = req.cookies.token;
 
@@ -134,5 +253,38 @@ router.post('/logout', async (req, res) => {
         return res.status(500).json({ message: "Error logging out", error: error.message });
     }
 });
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 60c72b2f9b1d4a001d1e9c8c
+ *         userName:
+ *           type: string
+ *           example: John Doe
+ *         email:
+ *           type: string
+ *           example: john.doe@example.com
+ *         password:
+ *           type: string
+ *           example: password123
+ *         role:
+ *           type: string
+ *           enum: [user, admin]
+ *           example: user
+ *         expTokenTime:
+ *           type: string
+ *           format: date-time
+ *           example: 2024-11-02T15:21:42.926Z
+ *         expRefreshTokenTime:
+ *           type: string
+ *           format: date-time
+ *           example: 2024-11-02T15:21:42.926Z
+ */
 
 export default router;
